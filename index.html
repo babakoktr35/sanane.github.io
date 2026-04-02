@@ -407,7 +407,8 @@ function selTheme(btn, t) {
 }
 
 /* ── Görsel oluştur (yüksek kalite 1600×1200) ── */
-function wrapText(ctx, text, x, y, maxW, lineH) {
+
+function splitLines(ctx, text, maxW) {
   const words = text.split(' ');
   let line = '', lines = [];
   for (let w of words) {
@@ -416,8 +417,24 @@ function wrapText(ctx, text, x, y, maxW, lineH) {
     else line = test;
   }
   if (line.trim()) lines.push(line.trim());
+  return lines;
+}
+
+function drawLines(ctx, lines, x, y, lineH) {
   lines.forEach((l, i) => ctx.fillText(l, x, y + i * lineH));
-  return lines.length;
+}
+
+// Kullanılabilir yüksekliğe oturan en büyük font boyutunu bulur
+function calcFontSize(ctx, text, maxW, availableH, fontTemplate, minSize, maxSize) {
+  for (let size = maxSize; size >= minSize; size -= 2) {
+    ctx.font = fontTemplate.replace('__SIZE__', size);
+    const lines = splitLines(ctx, text, maxW);
+    const lineH = size * 1.45;
+    if (lines.length * lineH <= availableH) return { size, lines, lineH };
+  }
+  ctx.font = fontTemplate.replace('__SIZE__', minSize);
+  const lines = splitLines(ctx, text, maxW);
+  return { size: minSize, lines, lineH: minSize * 1.45 };
 }
 
 function generate() {
@@ -491,24 +508,44 @@ function generate() {
 
   div(topDiv + 115);
 
-  // Mesaj
-  ctx.fillStyle = t.textColor;
-  ctx.font = t.bodyFont;
-  ctx.textAlign = 'center';
-  const lc = wrapText(ctx, msg, W / 2, topDiv + 175, cw - 260, 56);
-  const msgBottom = topDiv + 175 + lc * 56 + 50;
+  // Mesaj — font boyutu otomatik: kısa metinde büyük, uzun metinde küçük
+  // Kullanılabilir alan: topDiv+175'ten imza+sembol öncesine kadar (~H-280 civarı)
+  const msgAreaTop = topDiv + 175;
+  const msgAreaH   = (cy + ch) - msgAreaTop - 220; // imza + semboller için yer bırak
+  const msgMaxW    = cw - 260;
 
-  div(msgBottom);
+  // Tema bodyFont'tan italic/normal bilgisini al, boyutu değiştirilebilir yap
+  const isBold   = t.bodyFont.includes('bold') ? 'bold ' : '';
+  const isItalic = t.bodyFont.includes('italic') ? 'italic ' : '';
+  const fontFace = t.bodyFont.replace(/^(bold\s)?(italic\s)?[\d]+px\s/, ''); // sadece aile kısmı
+  const fontTpl  = `${isBold}${isItalic}__SIZE__px ${fontFace}`;
+
+  const { size: msgSize, lines: msgLines, lineH } = calcFontSize(
+    ctx, msg, msgMaxW, msgAreaH, fontTpl, 28, 110
+  );
+
+  // Mesajı dikey ortala
+  const totalMsgH = msgLines.length * lineH;
+  const msgStartY = msgAreaTop + (msgAreaH - totalMsgH) / 2 + msgSize;
+
+  ctx.fillStyle = t.textColor;
+  ctx.font = `${isBold}${isItalic}${msgSize}px ${fontFace}`;
+  ctx.textAlign = 'center';
+  drawLines(ctx, msgLines, W / 2, msgStartY, lineH);
+
+  const msgBottom = msgStartY + (msgLines.length - 1) * lineH + 50;
+
+  div(msgBottom + 20);
 
   // İmza
   ctx.fillStyle = t.subColor;
   ctx.font = t.sigFont;
   ctx.textAlign = 'center';
-  ctx.fillText((from ? 'Seni çok seven ' + from : 'Bir kalpten') + '  ' + t.emoji, W / 2, msgBottom + 66);
+  ctx.fillText((from ? 'Seni çok seven ' + from : 'Bir kalpten') + '  ' + t.emoji, W / 2, msgBottom + 80);
 
   // Alt sembol sırası
   ctx.font = '42px serif'; ctx.globalAlpha = 0.65; ctx.fillStyle = t.accent;
-  [-100,-50,0,50,100].forEach((off, i) => ctx.fillText(syms[i % syms.length], W / 2 + off, msgBottom + 120));
+  [-100,-50,0,50,100].forEach((off, i) => ctx.fillText(syms[i % syms.length], W / 2 + off, msgBottom + 138));
   ctx.globalAlpha = 1;
 
   document.getElementById('canvasWrap').style.display = 'block';
