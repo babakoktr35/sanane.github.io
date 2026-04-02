@@ -1,97 +1,228 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sevgili Mesaj ♡</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;600;700&family=Nunito:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
+
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400&display=swap');
   * { margin:0; padding:0; box-sizing:border-box; }
-  .wrap { background: linear-gradient(135deg,#ffe0ec,#fce4f3,#f5d0f0); padding:36px 20px; font-family:'Lato',sans-serif; }
-  .card { background:rgba(255,255,255,0.88); backdrop-filter:blur(12px); border-radius:24px; border:1.5px solid rgba(255,120,170,0.3); padding:28px 24px; max-width:540px; margin:0 auto 20px; }
-  .slabel { font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:#e91e8c; margin-bottom:8px; display:block; }
-  input[type=text], textarea { width:100%; background:rgba(255,240,248,0.7); border:1px solid rgba(233,30,140,0.2); border-radius:14px; padding:12px 16px; font-family:'Lato',sans-serif; font-size:14px; color:#880e4f; outline:none; transition:.2s; resize:none; margin-bottom:16px; }
-  input:focus, textarea:focus { border-color:#e91e8c; background:#fff0f8; }
-  input::placeholder, textarea::placeholder { color:rgba(194,24,91,0.35); }
-  .theme-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:20px; }
-  .tbtn { padding:10px 6px; border-radius:12px; border:1.5px solid rgba(233,30,140,0.2); background:rgba(255,240,248,0.5); cursor:pointer; text-align:center; font-size:12px; color:#c2185b; font-family:'Lato',sans-serif; transition:.2s; }
-  .tbtn .em { font-size:18px; display:block; margin-bottom:3px; }
-  .tbtn:hover,.tbtn.active { background:#e91e8c; border-color:#e91e8c; color:#fff; }
-  .go-btn { width:100%; padding:16px; background:linear-gradient(135deg,#e91e8c,#c2185b); border:none; border-radius:16px; color:#fff; font-family:'Playfair Display',serif; font-size:17px; font-style:italic; cursor:pointer; letter-spacing:.5px; }
-  .go-btn:hover { opacity:.9; }
-  #dlBtn { display:none; width:100%; padding:16px; background:linear-gradient(135deg,#4caf50,#2e7d32); border:none; border-radius:16px; color:#fff; font-family:'Lato',sans-serif; font-size:15px; cursor:pointer; margin-top:12px; letter-spacing:.3px; }
-  #dlBtn:hover { opacity:.9; }
-  #canvasWrap { display:none; margin-top:16px; border-radius:16px; overflow:hidden; border:1.5px solid rgba(233,30,140,0.25); }
+
+  body {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #e8849e 0%, #d46b8a 40%, #c5527a 70%, #e8849e 100%);
+    font-family: 'Nunito', sans-serif;
+    overflow-x: hidden;
+  }
+
+  #floatCanvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrap {
+    position: relative;
+    z-index: 1;
+    padding: 40px 20px 30px;
+  }
+
+  .header { text-align: center; margin-bottom: 32px; }
+  .header-emoji { font-size: 34px; margin-bottom: 8px; letter-spacing: 6px; }
+  .header-title {
+    font-family: 'Dancing Script', cursive;
+    font-size: 40px;
+    color: #fff;
+    text-shadow: 0 2px 14px rgba(160,20,70,0.4);
+    font-weight: 700;
+  }
+  .header-sub {
+    font-size: 13px;
+    color: rgba(255,255,255,0.82);
+    margin-top: 6px;
+    font-weight: 300;
+    letter-spacing: .5px;
+  }
+
+  .card {
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(18px);
+    border-radius: 28px;
+    border: 1.5px solid rgba(255,255,255,0.65);
+    padding: 30px 26px;
+    max-width: 560px;
+    margin: 0 auto 20px;
+    box-shadow: 0 8px 40px rgba(160,30,80,0.22);
+  }
+
+  .slabel {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #b0305a;
+    margin-bottom: 7px;
+    display: block;
+    font-weight: 700;
+  }
+
+  input[type=text], textarea {
+    width: 100%;
+    background: rgba(255,230,242,0.6);
+    border: 1.5px solid rgba(200,50,100,0.18);
+    border-radius: 16px;
+    padding: 13px 18px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 14px;
+    color: #7a1040;
+    outline: none;
+    transition: .2s;
+    resize: none;
+    margin-bottom: 18px;
+  }
+  input:focus, textarea:focus { border-color: #d63f7a; background: #fff0f7; }
+  input::placeholder, textarea::placeholder { color: rgba(170,50,90,0.38); }
+
+  .theme-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:9px; margin-bottom:22px; }
+
+  .tbtn {
+    padding: 12px 6px 10px;
+    border-radius: 16px;
+    border: 2px solid rgba(200,60,100,0.15);
+    background: rgba(255,230,245,0.5);
+    cursor: pointer;
+    text-align: center;
+    font-size: 11px;
+    color: #a02050;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    transition: all .22s;
+    letter-spacing: .3px;
+  }
+  .tbtn .em { font-size: 22px; display: block; margin-bottom: 4px; }
+  .tbtn:hover { transform: translateY(-2px); box-shadow: 0 4px 14px rgba(200,50,100,0.22); }
+
+  .tbtn[data-t="romantic"].active { background:linear-gradient(135deg,#ff6fa8,#c2185b); border-color:#c2185b; color:#fff; box-shadow:0 4px 16px rgba(194,24,91,.35); }
+  .tbtn[data-t="sweet"].active    { background:linear-gradient(135deg,#ffc1d9,#f48fb1); border-color:#f48fb1; color:#fff; box-shadow:0 4px 16px rgba(244,143,177,.35); }
+  .tbtn[data-t="magic"].active    { background:linear-gradient(135deg,#7c4dff,#4a0080); border-color:#7c4dff; color:#fff; box-shadow:0 4px 16px rgba(124,77,255,.35); }
+  .tbtn[data-t="deep"].active     { background:linear-gradient(135deg,#1a1a2e,#0d0d1a); border-color:#ffd54f; color:#ffd54f; box-shadow:0 4px 16px rgba(0,0,20,.4); }
+  .tbtn[data-t="dream"].active    { background:linear-gradient(135deg,#4dd0e1,#0097a7); border-color:#0097a7; color:#fff; box-shadow:0 4px 16px rgba(0,151,167,.3); }
+  .tbtn[data-t="rose"].active     { background:linear-gradient(135deg,#e64a19,#7f1500); border-color:#e64a19; color:#fff; box-shadow:0 4px 16px rgba(230,74,25,.35); }
+
+  .go-btn {
+    width: 100%;
+    padding: 17px;
+    background: linear-gradient(135deg, #e91e8c, #c2185b);
+    border: none;
+    border-radius: 18px;
+    color: #fff;
+    font-family: 'Dancing Script', cursive;
+    font-size: 23px;
+    cursor: pointer;
+    letter-spacing: .5px;
+    box-shadow: 0 4px 20px rgba(233,30,140,0.38);
+    transition: all .22s;
+  }
+  .go-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(233,30,140,0.46); }
+
+  #dlBtn {
+    display: none;
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, #4caf50, #2e7d32);
+    border: none;
+    border-radius: 16px;
+    color: #fff;
+    font-family: 'Nunito', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 13px;
+    box-shadow: 0 4px 16px rgba(46,125,50,0.28);
+    transition: all .22s;
+  }
+  #dlBtn:hover { opacity:.9; transform:translateY(-1px); }
+
+  #canvasWrap {
+    display: none;
+    margin-top: 18px;
+    border-radius: 18px;
+    overflow: hidden;
+    border: 1.5px solid rgba(233,30,140,0.2);
+    box-shadow: 0 4px 24px rgba(160,30,80,0.18);
+  }
   #canvasWrap canvas { width:100%; display:block; }
 
-  /* Müzik Çubuğu */
+  .footer {
+    text-align: center;
+    padding: 14px 0 6px;
+    font-family: 'Dancing Script', cursive;
+    font-size: 16px;
+    color: rgba(255,255,255,0.68);
+    letter-spacing: .3px;
+  }
+
+  /* Müzik çubuğu */
   #musicBar {
     position: fixed;
-    bottom: 20px;
-    right: 20px;
+    bottom: 22px; right: 22px;
     background: rgba(255,255,255,0.92);
-    backdrop-filter: blur(12px);
-    border: 1.5px solid rgba(233,30,140,0.3);
+    backdrop-filter: blur(14px);
+    border: 1.5px solid rgba(233,30,140,0.28);
     border-radius: 50px;
     padding: 10px 18px;
     display: flex;
     align-items: center;
-    gap: 10px;
-    font-family: 'Lato', sans-serif;
+    gap: 9px;
+    font-family: 'Nunito', sans-serif;
     font-size: 13px;
     color: #c2185b;
-    box-shadow: 0 4px 20px rgba(233,30,140,0.15);
+    font-weight: 600;
+    box-shadow: 0 4px 20px rgba(233,30,140,0.16);
     z-index: 9999;
     cursor: pointer;
-    transition: all .2s;
+    transition: all .22s;
   }
-  #musicBar:hover { box-shadow: 0 6px 24px rgba(233,30,140,0.25); transform: translateY(-1px); }
-  #musicBar .music-icon { font-size: 18px; }
-  #musicBar .music-label { font-weight: 400; letter-spacing: .3px; }
-  #musicBar .music-waves {
-    display: flex;
-    align-items: center;
-    gap: 2px;
-    height: 16px;
-  }
-  #musicBar .music-waves span {
-    display: block;
-    width: 3px;
-    background: #e91e8c;
-    border-radius: 2px;
-    animation: wave 1s ease-in-out infinite;
-  }
-  #musicBar .music-waves span:nth-child(1) { height: 6px;  animation-delay: 0s; }
-  #musicBar .music-waves span:nth-child(2) { height: 12px; animation-delay: .15s; }
-  #musicBar .music-waves span:nth-child(3) { height: 8px;  animation-delay: .3s; }
-  #musicBar .music-waves span:nth-child(4) { height: 14px; animation-delay: .1s; }
-  #musicBar .music-waves span:nth-child(5) { height: 5px;  animation-delay: .25s; }
-  #musicBar.paused .music-waves span { animation-play-state: paused; }
-
-  @keyframes wave {
-    0%, 100% { transform: scaleY(1); }
-    50%       { transform: scaleY(2); }
-  }
+  #musicBar:hover { box-shadow:0 6px 24px rgba(233,30,140,0.28); transform:translateY(-2px); }
+  .music-icon { font-size: 17px; }
+  .music-waves { display:flex; align-items:center; gap:2px; height:16px; }
+  .music-waves span { display:block; width:3px; background:#e91e8c; border-radius:2px; animation:wave 1s ease-in-out infinite; }
+  .music-waves span:nth-child(1){height:6px;animation-delay:0s}
+  .music-waves span:nth-child(2){height:12px;animation-delay:.15s}
+  .music-waves span:nth-child(3){height:8px;animation-delay:.3s}
+  .music-waves span:nth-child(4){height:14px;animation-delay:.1s}
+  .music-waves span:nth-child(5){height:5px;animation-delay:.25s}
+  #musicBar.paused .music-waves span { animation-play-state:paused; }
+  @keyframes wave { 0%,100%{transform:scaleY(1)} 50%{transform:scaleY(2)} }
 </style>
+</head>
+<body>
 
-<!-- Arka plan müziği -->
+<canvas id="floatCanvas"></canvas>
+
 <audio id="bgMusic" loop preload="auto">
   <source src="music.mp3" type="audio/mpeg">
 </audio>
 
-<!-- Müzik kontrol çubuğu -->
 <div id="musicBar" onclick="toggleMusic()">
   <span class="music-icon">♫</span>
-  <span class="music-label" id="musicLabel">Müzik</span>
-  <div class="music-waves">
-    <span></span><span></span><span></span><span></span><span></span>
-  </div>
+  <span id="musicLabel">Müzik</span>
+  <div class="music-waves"><span></span><span></span><span></span><span></span><span></span></div>
 </div>
 
 <div class="wrap">
-  <div style="text-align:center;margin-bottom:28px;">
-    <div style="font-size:28px;margin-bottom:6px;">💌 ♡ 💕</div>
-    <div style="font-family:'Playfair Display',serif;font-size:26px;color:#c2185b;font-weight:700;">Ona Mesaj Gönder</div>
-    <div style="font-size:13px;color:#e91e8c;opacity:.7;margin-top:4px;font-weight:300;">Mesajını JPG olarak indir, paylaş!</div>
+  <div class="header">
+    <div class="header-emoji">💌 ♡ 🌸</div>
+    <div class="header-title">Ona Mesaj Gönder</div>
+    <div class="header-sub">Mesajını güzel bir görsele dönüştür, paylaş! ✨</div>
   </div>
 
   <div class="card">
     <span class="slabel">Kime?</span>
-    <input type="text" id="toName" placeholder="Kız arkadaşının adı..." />
+    <input type="text" id="toName" placeholder="Kişinin adı..." />
 
     <span class="slabel">Kimden?</span>
     <input type="text" id="fromName" placeholder="Senin adın..." />
@@ -101,83 +232,172 @@
 
     <span class="slabel">Tema</span>
     <div class="theme-grid">
-      <button class="tbtn active" onclick="selTheme(this,'romantic')"><span class="em">💕</span>Romantik</button>
-      <button class="tbtn" onclick="selTheme(this,'sweet')"><span class="em">🌸</span>Tatlı</button>
-      <button class="tbtn" onclick="selTheme(this,'magic')"><span class="em">✨</span>Büyülü</button>
-      <button class="tbtn" onclick="selTheme(this,'deep')"><span class="em">🌙</span>Derin</button>
-      <button class="tbtn" onclick="selTheme(this,'light')"><span class="em">🦋</span>Hafif</button>
-      <button class="tbtn" onclick="selTheme(this,'fire')"><span class="em">🔥</span>Ateşli</button>
+      <button class="tbtn active" data-t="romantic" onclick="selTheme(this,'romantic')"><span class="em">💕</span>Romantik</button>
+      <button class="tbtn" data-t="sweet" onclick="selTheme(this,'sweet')"><span class="em">🎀</span>Pamuk</button>
+      <button class="tbtn" data-t="magic" onclick="selTheme(this,'magic')"><span class="em">🔮</span>Büyülü</button>
+      <button class="tbtn" data-t="deep" onclick="selTheme(this,'deep')"><span class="em">🌙</span>Gece</button>
+      <button class="tbtn" data-t="dream" onclick="selTheme(this,'dream')"><span class="em">🫧</span>Rüya</button>
+      <button class="tbtn" data-t="rose" onclick="selTheme(this,'rose')"><span class="em">🌹</span>Gül</button>
     </div>
 
-    <button class="go-btn" onclick="generate()">Görsel Oluştur ♡</button>
+    <button class="go-btn" onclick="generate()">✨ Görsel Oluştur ♡</button>
     <div id="canvasWrap"><canvas id="msgCanvas"></canvas></div>
     <button id="dlBtn" onclick="download()">⬇ JPG Olarak İndir</button>
   </div>
+
+  <div class="footer">Eylül Kızılkaya'dan sevgilerle 🌷</div>
 </div>
 
 <script>
-let theme = 'romantic';
+/* ── Uçuşan parçacıklar ── */
+const fc = document.getElementById('floatCanvas');
+const fctx = fc.getContext('2d');
+const allSymbols = ['♡','💕','🌸','✦','🌷','⭐','🦋','✿','💫','🌙','❀','♥','🫧','🎀','🌺','🍬','☁️','🕊','🌈','💖'];
+let particles = [];
+
+function resizeFC() { fc.width = window.innerWidth; fc.height = window.innerHeight; }
+resizeFC();
+window.addEventListener('resize', resizeFC);
+
+function mkParticle() {
+  return {
+    x: Math.random() * fc.width,
+    y: fc.height + 30,
+    sym: allSymbols[Math.floor(Math.random() * allSymbols.length)],
+    size: 13 + Math.random() * 20,
+    speed: 0.35 + Math.random() * 0.85,
+    drift: (Math.random() - 0.5) * 0.55,
+    opacity: 0.15 + Math.random() * 0.28,
+    rot: Math.random() * Math.PI * 2,
+    rotSpeed: (Math.random() - 0.5) * 0.018
+  };
+}
+for (let i = 0; i < 42; i++) {
+  const p = mkParticle(); p.y = Math.random() * fc.height; particles.push(p);
+}
+function animFC() {
+  fctx.clearRect(0, 0, fc.width, fc.height);
+  particles.forEach((p, i) => {
+    fctx.save();
+    fctx.globalAlpha = p.opacity;
+    fctx.font = `${p.size}px serif`;
+    fctx.translate(p.x, p.y);
+    fctx.rotate(p.rot);
+    fctx.fillText(p.sym, 0, 0);
+    fctx.restore();
+    p.y -= p.speed; p.x += p.drift; p.rot += p.rotSpeed;
+    if (p.y < -40) particles[i] = mkParticle();
+  });
+  requestAnimationFrame(animFC);
+}
+animFC();
+
+/* ── Müzik ── */
 let musicPlaying = false;
 const audio = document.getElementById('bgMusic');
-const musicBar = document.getElementById('musicBar');
 const musicLabel = document.getElementById('musicLabel');
+const musicBar = document.getElementById('musicBar');
 
-// Sayfa yüklenince otomatik çalmayı dene
 window.addEventListener('load', () => {
   audio.volume = 0.5;
-  const playPromise = audio.play();
-  if (playPromise !== undefined) {
-    playPromise.then(() => {
-      musicPlaying = true;
-      musicLabel.textContent = 'Duraklat';
-    }).catch(() => {
-      // Tarayıcı autoplay'i engelledi — kullanıcı etkileşimi bekleniyor
-      musicPlaying = false;
-      musicLabel.textContent = 'Müziği Çal';
-      musicBar.classList.add('paused');
-    });
-  }
+  audio.play().then(() => {
+    musicPlaying = true; musicLabel.textContent = 'Duraklat';
+  }).catch(() => {
+    musicLabel.textContent = 'Müziği Çal'; musicBar.classList.add('paused');
+  });
 });
 
-// Kullanıcı sayfaya ilk kez dokunduğunda/tıkladığında müziği başlat
-function startMusicOnInteraction() {
+function tryStart() {
   if (!musicPlaying) {
     audio.play().then(() => {
-      musicPlaying = true;
-      musicLabel.textContent = 'Duraklat';
-      musicBar.classList.remove('paused');
+      musicPlaying = true; musicLabel.textContent = 'Duraklat'; musicBar.classList.remove('paused');
     }).catch(() => {});
   }
-  document.removeEventListener('click', startMusicOnInteraction);
-  document.removeEventListener('touchstart', startMusicOnInteraction);
-  document.removeEventListener('keydown', startMusicOnInteraction);
+  ['click','touchstart','keydown'].forEach(e => document.removeEventListener(e, tryStart));
 }
-document.addEventListener('click', startMusicOnInteraction);
-document.addEventListener('touchstart', startMusicOnInteraction);
-document.addEventListener('keydown', startMusicOnInteraction);
+['click','touchstart','keydown'].forEach(e => document.addEventListener(e, tryStart));
 
 function toggleMusic() {
   if (musicPlaying) {
-    audio.pause();
-    musicPlaying = false;
-    musicLabel.textContent = 'Müziği Çal';
-    musicBar.classList.add('paused');
+    audio.pause(); musicPlaying = false;
+    musicLabel.textContent = 'Müziği Çal'; musicBar.classList.add('paused');
   } else {
     audio.play().then(() => {
-      musicPlaying = true;
-      musicLabel.textContent = 'Duraklat';
-      musicBar.classList.remove('paused');
+      musicPlaying = true; musicLabel.textContent = 'Duraklat'; musicBar.classList.remove('paused');
     });
   }
 }
 
+/* ── Temalar ── */
+let theme = 'romantic';
+
 const themes = {
-  romantic: { bg1:'#ffe0ec', bg2:'#ffc2d4', accent:'#e91e8c', text:'#880e4f', sub:'#c2185b', emoji:'💕', hearts:['♥','♡','💕','💗'] },
-  sweet:    { bg1:'#fff0f5', bg2:'#ffd6e8', accent:'#f06292', text:'#880e4f', sub:'#ad1457', emoji:'🌸', hearts:['🌸','✿','❀','♡'] },
-  magic:    { bg1:'#f3e5f5', bg2:'#e1bee7', accent:'#9c27b0', text:'#4a148c', sub:'#7b1fa2', emoji:'✨', hearts:['✦','✧','★','✨'] },
-  deep:     { bg1:'#1a1a2e', bg2:'#16213e', accent:'#e91e8c', text:'#f8bbd0', sub:'#f48fb1', emoji:'🌙', hearts:['☽','★','✦','♡'] },
-  light:    { bg1:'#e3f2fd', bg2:'#bbdefb', accent:'#1976d2', text:'#0d47a1', sub:'#1565c0', emoji:'🦋', hearts:['❋','✿','❀','♡'] },
-  fire:     { bg1:'#fff3e0', bg2:'#ffe0b2', accent:'#e64a19', text:'#bf360c', sub:'#d84315', emoji:'🔥', hearts:['❤','♥','✦','★'] }
+  romantic: {
+    bgStops: ['#ff6fa8','#c2185b','#880e4f'],
+    cardBg: 'rgba(255,255,255,0.93)',
+    accent: '#e91e8c', titleColor:'#c2185b', textColor:'#4a0020', subColor:'#e91e8c',
+    emoji: '💕',
+    symbols: ['♥','♡','💕','💗','❤','💘','💖','🌹'],
+    titleFont: 'bold italic 52px "Dancing Script", Georgia, serif',
+    bodyFont: 'italic 38px Georgia, serif',
+    sigFont: 'bold 38px "Dancing Script", Georgia, serif',
+    divColor: '#e91e8c', borderColor:'rgba(233,30,140,0.3)'
+  },
+  sweet: {
+    bgStops: ['#ffe4f0','#ffb7d5','#ff85bb'],
+    cardBg: 'rgba(255,250,253,0.96)',
+    accent: '#f48fb1', titleColor:'#ad1457', textColor:'#7b1f4a', subColor:'#c2185b',
+    emoji: '🎀',
+    symbols: ['🎀','🌸','✿','❀','🍬','🍭','☁️','🕊','💝'],
+    titleFont: 'bold 52px "Dancing Script", Georgia, serif',
+    bodyFont: '36px Georgia, serif',
+    sigFont: 'bold 38px "Dancing Script", Georgia, serif',
+    divColor: '#f48fb1', borderColor:'rgba(244,143,177,0.4)'
+  },
+  magic: {
+    bgStops: ['#1a0533','#2d0a5e','#4a1492'],
+    cardBg: 'rgba(25,8,55,0.86)',
+    accent: '#ce93d8', titleColor:'#f3e5f5', textColor:'#e1bee7', subColor:'#ce93d8',
+    emoji: '🔮',
+    symbols: ['✦','✧','★','✨','🌟','🔮','🌙','⭐','💫','🪄'],
+    titleFont: 'bold italic 52px "Dancing Script", Georgia, serif',
+    bodyFont: 'italic 36px Georgia, serif',
+    sigFont: 'bold 38px "Dancing Script", Georgia, serif',
+    divColor: '#ce93d8', borderColor:'rgba(206,147,216,0.3)'
+  },
+  deep: {
+    bgStops: ['#0d0d1a','#111132','#1a1a40'],
+    cardBg: 'rgba(255,255,255,0.07)',
+    accent: '#ffd54f', titleColor:'#ffd54f', textColor:'#e8eaf6', subColor:'#ffecb3',
+    emoji: '🌙',
+    symbols: ['🌙','⭐','✦','☽','★','💫','🌟','✧','🪐'],
+    titleFont: 'bold italic 52px "Dancing Script", Georgia, serif',
+    bodyFont: 'italic 36px Georgia, serif',
+    sigFont: 'bold 38px "Dancing Script", Georgia, serif',
+    divColor: '#ffd54f', borderColor:'rgba(255,213,79,0.28)'
+  },
+  dream: {
+    bgStops: ['#c5f0f5','#80deea','#4dd0e1'],
+    cardBg: 'rgba(255,255,255,0.9)',
+    accent: '#0097a7', titleColor:'#006064', textColor:'#004d40', subColor:'#00838f',
+    emoji: '🫧',
+    symbols: ['🫧','🦋','☁️','🌈','✿','❀','🕊','🌊','🐚'],
+    titleFont: 'bold 52px "Dancing Script", Georgia, serif',
+    bodyFont: '36px Georgia, serif',
+    sigFont: 'bold 38px "Dancing Script", Georgia, serif',
+    divColor: '#0097a7', borderColor:'rgba(0,151,167,0.25)'
+  },
+  rose: {
+    bgStops: ['#ffccbc','#ff7043','#bf360c'],
+    cardBg: 'rgba(255,252,250,0.94)',
+    accent: '#bf360c', titleColor:'#bf360c', textColor:'#3e1a0a', subColor:'#d84315',
+    emoji: '🌹',
+    symbols: ['🌹','🌺','❤','♥','🌷','✦','✿','🍂','🍁'],
+    titleFont: 'bold italic 52px "Dancing Script", Georgia, serif',
+    bodyFont: 'italic 36px Georgia, serif',
+    sigFont: 'bold 38px "Dancing Script", Georgia, serif',
+    divColor: '#bf360c', borderColor:'rgba(191,54,12,0.3)'
+  }
 };
 
 function selTheme(btn, t) {
@@ -186,93 +406,109 @@ function selTheme(btn, t) {
   theme = t;
 }
 
+/* ── Görsel oluştur (yüksek kalite 1600×1200) ── */
 function wrapText(ctx, text, x, y, maxW, lineH) {
   const words = text.split(' ');
-  let line = '';
-  let lines = [];
+  let line = '', lines = [];
   for (let w of words) {
     const test = line + w + ' ';
-    if (ctx.measureText(test).width > maxW && line !== '') {
-      lines.push(line.trim());
-      line = w + ' ';
-    } else { line = test; }
+    if (ctx.measureText(test).width > maxW && line !== '') { lines.push(line.trim()); line = w + ' '; }
+    else line = test;
   }
   if (line.trim()) lines.push(line.trim());
-  lines.forEach((l,i) => ctx.fillText(l, x, y + i * lineH));
+  lines.forEach((l, i) => ctx.fillText(l, x, y + i * lineH));
   return lines.length;
 }
 
 function generate() {
-  const to = document.getElementById('toName').value.trim();
+  const to   = document.getElementById('toName').value.trim();
   const from = document.getElementById('fromName').value.trim();
-  const msg = document.getElementById('message').value.trim();
+  const msg  = document.getElementById('message').value.trim();
   if (!to || !msg) {
     const el = !to ? document.getElementById('toName') : document.getElementById('message');
-    el.style.borderColor='#e91e8c'; el.focus();
-    setTimeout(()=>el.style.borderColor='',2000);
-    return;
+    el.style.borderColor = '#e91e8c'; el.focus();
+    setTimeout(() => el.style.borderColor = '', 2000); return;
   }
 
   const t = themes[theme];
-  const W = 800, H = 600;
+  const W = 1600, H = 1200;
   const canvas = document.getElementById('msgCanvas');
   canvas.width = W; canvas.height = H;
   const ctx = canvas.getContext('2d');
 
-  const grad = ctx.createLinearGradient(0,0,W,H);
-  grad.addColorStop(0, t.bg1);
-  grad.addColorStop(1, t.bg2);
+  // Arkaplan gradyan
+  const grad = ctx.createLinearGradient(0, 0, W, H);
+  t.bgStops.forEach((c, i) => grad.addColorStop(i / (t.bgStops.length - 1), c));
   ctx.fillStyle = grad;
-  ctx.fillRect(0,0,W,H);
+  ctx.fillRect(0, 0, W, H);
 
-  ctx.globalAlpha = 0.08;
-  ctx.font = '28px serif';
-  ctx.fillStyle = t.accent;
-  const hlist = t.hearts;
-  for (let i=0; i<40; i++) {
-    const hx = (i*137)%W, hy = (i*97+50)%H;
-    ctx.fillText(hlist[i%hlist.length], hx, hy);
+  // Subtle nokta doku
+  ctx.globalAlpha = 0.055;
+  for (let xi = 0; xi < W; xi += 44) for (let yi = 0; yi < H; yi += 44) {
+    ctx.beginPath(); ctx.arc(xi, yi, 1.6, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(255,255,255,0.9)'; ctx.fill();
   }
   ctx.globalAlpha = 1;
 
-  ctx.fillStyle = 'rgba(255,255,255,0.55)';
-  roundRect(ctx, 60, 50, W-120, H-100, 32);
-  ctx.fill();
-
-  ctx.fillStyle = t.accent;
-  ctx.font = 'italic bold 22px "Playfair Display", Georgia, serif';
-  ctx.textAlign = 'center';
-  ctx.fillText('Sevgili ' + to + ',', W/2, 130);
-
-  ctx.strokeStyle = t.accent;
-  ctx.globalAlpha = 0.3;
-  ctx.beginPath(); ctx.moveTo(W/2-100, 148); ctx.lineTo(W/2+100, 148); ctx.lineWidth=1; ctx.stroke();
+  // Dağınık semboller
+  ctx.globalAlpha = 0.11;
+  ctx.font = '54px serif';
+  const syms = t.symbols;
+  for (let i = 0; i < 64; i++) {
+    ctx.fillStyle = t.accent;
+    ctx.fillText(syms[i % syms.length], (i * 179 + 40) % W, (i * 107 + 60) % H);
+  }
   ctx.globalAlpha = 1;
 
-  ctx.fillStyle = t.text;
-  ctx.font = 'italic 20px "Playfair Display", Georgia, serif';
-  ctx.textAlign = 'center';
-  const lines = wrapText(ctx, msg, W/2, 185, W-200, 34);
+  // Kart
+  const cx = 80, cy = 70, cw = W - 160, ch = H - 140, cr = 56;
+  ctx.fillStyle = t.cardBg;
+  roundRect(ctx, cx, cy, cw, ch, cr); ctx.fill();
+  ctx.strokeStyle = t.borderColor; ctx.lineWidth = 3;
+  roundRect(ctx, cx, cy, cw, ch, cr); ctx.stroke();
 
-  const msgBottom = 185 + lines * 34 + 30;
-
-  ctx.fillStyle = t.accent;
-  ctx.globalAlpha = 0.3;
-  ctx.beginPath(); ctx.moveTo(W/2-80, msgBottom); ctx.lineTo(W/2+80, msgBottom); ctx.lineWidth=1; ctx.stroke();
+  // Köşe emojileri
+  ctx.font = '48px serif'; ctx.globalAlpha = 0.45; ctx.fillStyle = t.accent;
+  [[cx+55,cy+62],[cx+cw-55,cy+62],[cx+55,cy+ch-42],[cx+cw-55,cy+ch-42]].forEach(([x,y]) => ctx.fillText(t.emoji, x-24, y));
   ctx.globalAlpha = 1;
 
-  ctx.fillStyle = t.sub;
-  ctx.font = '400 16px "Lato", sans-serif';
-  ctx.textAlign = 'center';
-  const imzaAdi = from || 'bir kalp';
-  ctx.fillText('Seni çok seven ' + imzaAdi + ' ' + t.emoji, W/2, msgBottom + 36);
+  // Divider yardımcı
+  const div = (y) => {
+    ctx.save(); ctx.strokeStyle = t.divColor; ctx.globalAlpha = 0.3; ctx.lineWidth = 1.8;
+    ctx.beginPath(); ctx.moveTo(cx+110, y); ctx.lineTo(cx+cw-110, y); ctx.stroke(); ctx.restore();
+  };
 
-  ctx.font = '20px serif';
-  ctx.fillStyle = t.accent;
-  ctx.globalAlpha = 0.6;
-  ctx.fillText('♡', W/2 - 30, msgBottom + 72);
-  ctx.fillText(t.emoji, W/2, msgBottom + 72);
-  ctx.fillText('♡', W/2 + 30, msgBottom + 72);
+  const topDiv = cy + 100;
+  div(topDiv);
+
+  // "Sevgili X,"
+  ctx.fillStyle = t.titleColor;
+  ctx.font = t.titleFont;
+  ctx.textAlign = 'center';
+  ctx.shadowColor = 'rgba(0,0,0,0.1)'; ctx.shadowBlur = 12;
+  ctx.fillText('Sevgili ' + to + ',', W / 2, topDiv + 80);
+  ctx.shadowBlur = 0;
+
+  div(topDiv + 115);
+
+  // Mesaj
+  ctx.fillStyle = t.textColor;
+  ctx.font = t.bodyFont;
+  ctx.textAlign = 'center';
+  const lc = wrapText(ctx, msg, W / 2, topDiv + 175, cw - 260, 56);
+  const msgBottom = topDiv + 175 + lc * 56 + 50;
+
+  div(msgBottom);
+
+  // İmza
+  ctx.fillStyle = t.subColor;
+  ctx.font = t.sigFont;
+  ctx.textAlign = 'center';
+  ctx.fillText((from ? 'Seni çok seven ' + from : 'Bir kalpten') + '  ' + t.emoji, W / 2, msgBottom + 66);
+
+  // Alt sembol sırası
+  ctx.font = '42px serif'; ctx.globalAlpha = 0.65; ctx.fillStyle = t.accent;
+  [-100,-50,0,50,100].forEach((off, i) => ctx.fillText(syms[i % syms.length], W / 2 + off, msgBottom + 120));
   ctx.globalAlpha = 1;
 
   document.getElementById('canvasWrap').style.display = 'block';
@@ -283,9 +519,9 @@ function roundRect(ctx, x, y, w, h, r) {
   ctx.beginPath();
   ctx.moveTo(x+r, y);
   ctx.lineTo(x+w-r, y); ctx.arcTo(x+w,y,x+w,y+r,r);
-  ctx.lineTo(x+w, y+h-r); ctx.arcTo(x+w,y+h,x+w-r,y+h,r);
-  ctx.lineTo(x+r, y+h); ctx.arcTo(x,y+h,x,y+h-r,r);
-  ctx.lineTo(x, y+r); ctx.arcTo(x,y,x+r,y,r);
+  ctx.lineTo(x+w,y+h-r); ctx.arcTo(x+w,y+h,x+w-r,y+h,r);
+  ctx.lineTo(x+r,y+h); ctx.arcTo(x,y+h,x,y+h-r,r);
+  ctx.lineTo(x,y+r); ctx.arcTo(x,y,x+r,y,r);
   ctx.closePath();
 }
 
@@ -294,7 +530,9 @@ function download() {
   const canvas = document.getElementById('msgCanvas');
   const link = document.createElement('a');
   link.download = 'mesaj-' + to.toLowerCase().replace(/\s+/g,'-') + '.jpg';
-  link.href = canvas.toDataURL('image/jpeg', 0.95);
+  link.href = canvas.toDataURL('image/jpeg', 0.97);
   link.click();
 }
 </script>
+</body>
+</html>
